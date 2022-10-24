@@ -33,8 +33,9 @@ def extract_args(params: dict) -> str:
         arguments += key + "=" + str(value["value"]) + (", " if key != list(params.keys())[-1] else "")
     return arguments
 def litio():
+    directory = os.path.join(os.getcwd(),args.file).replace("\\","/")
     exec("import importlib.util;" + \
-    f"spec = importlib.util.spec_from_file_location('{args.file.replace('.py','')}','{os.path.join(os.getcwd(),args.file)}');" + \
+    f"spec = importlib.util.spec_from_file_location('{args.file.replace('.py','')}','{directory}');" + \
     "lib = importlib.util.module_from_spec(spec);" + \
     "spec.loader.exec_module(lib);")
     
