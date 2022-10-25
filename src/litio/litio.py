@@ -1,7 +1,7 @@
 import argparse
 import os
 
-parser = argparse.ArgumentParser(description='A command line function tester',epilog="Usage example: litio adding.py --function add --params number1 200 int number2 300 int")
+parser = argparse.ArgumentParser(description='A command line function tester',epilog="Usage example: litio adding.py --function add --function-type function --params number1 200 int number2 300 int")
 parser.add_argument('file', metavar='file', type=str, help='file to execute')
 parser.add_argument('--function',"-f",default="", help='function to execute',required=True)
 parser.add_argument("--function-type","-t",dest="function_type",choices=("function","method","classmethod"),help='function type',required=True)

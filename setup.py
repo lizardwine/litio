@@ -14,7 +14,7 @@ setup(
         "Bug Tracker": "https://github.com/lizardwine/litio/issues",
     },
     license='GPL v3.0',
-    version='0.2.1.0',
+    version='0.2.1.1',
     keywords=['testing', 'tester'],
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
