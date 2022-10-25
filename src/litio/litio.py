@@ -39,13 +39,14 @@ def litio():
     "lib = importlib.util.module_from_spec(spec);" + \
     "spec.loader.exec_module(lib);")
     exec(f"global functions;functions = lib.{args.function}.__annotations__")
-    exec(f"global init_functions;init_functions = lib.{args.function.split('.')[0]}.__init__.__annotations__")
     params = params_to_dic(args.params)
     params = eval_params_values(params,functions)
     arguments = extract_args(params)
-    instance_params = params_to_dic(args.instance_params)
-    instance_params = eval_params_values(instance_params,init_functions)
-    instance_args = extract_args(instance_params)
+    if args.function_type == "method":
+        exec(f"global init_functions;init_functions = lib.{args.function.split('.')[0]}.__init__.__annotations__")
+        instance_params = params_to_dic(args.instance_params)
+        instance_params = eval_params_values(instance_params,init_functions)
+        instance_args = extract_args(instance_params)
     try:
         if args.function_type == "function":
             exec(f"fun = lib.{args.function}")
