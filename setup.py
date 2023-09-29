@@ -14,11 +14,11 @@ setup(
         "Bug Tracker": "https://github.com/lizardwine/litio/issues",
     },
     license='GPL v3.0',
-    version='0.4.0.0',
+    version='0.4.0.1',
     keywords=['testing', 'tester'],
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'Operating System :: OS Independent',
