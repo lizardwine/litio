@@ -1,12 +1,12 @@
 def addOne(n:int):
     print(n + 1)
-def addOneWR(n:str):
+def addOneWR(n:int):
     return n + 1
 def concatenate_lists(a:list,b:list) -> list:
     print(a)
     a.extend(b)
     return a
-def pow(base,exponent):
+def pow(base:int,exponent:int):
     if exponent == 0:
         return 1
     elif exponent < 0:

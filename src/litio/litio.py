@@ -1,5 +1,6 @@
 import argparse
-import os
+import importlib.util
+
 
 parser = argparse.ArgumentParser(description='A command line function tester',epilog="Usage example: litio adding.py --function add --function-type function --params number1 200 number2 300")
 parser.add_argument('file', metavar='file', type=str, help='file to execute')
@@ -8,6 +9,7 @@ parser.add_argument("--function-type","-t",dest="function_type",choices=("functi
 parser.add_argument('--instance-params',"-i",dest="instance_params", default="",nargs="*", help='params to pass to the function',required=False)
 parser.add_argument('--params',"-p", default="",nargs="*", help='params to pass to the function',required=False)
 parser.add_argument('--print-return', default=False, help='print return value',required=False,type=bool, action=argparse.BooleanOptionalAction)
+parser.add_argument('--version','-v',action='version',version='%(prog)s 0.4.0.0')
 
 args = parser.parse_args()
 
@@ -27,46 +29,52 @@ def eval_params_values(params: dict,functions: dict) -> dict:
         else:
             params[key] = f'"{value}"'
     return params
-def extract_args(params: dict) -> str:
-    arguments = ""
-    for key, value in params.items():
-        arguments += key + "=" + str(value) + (", " if key != list(params.keys())[-1] else "")
-    return arguments
+
 def litio():
-    directory = os.path.join(os.getcwd(),args.file).replace("\\","/")
-    exec("import importlib.util;" + \
-    f"spec = importlib.util.spec_from_file_location('{args.file.replace('.py','')}','{directory}');" + \
-    "lib = importlib.util.module_from_spec(spec);" + \
-    "spec.loader.exec_module(lib);")
-    exec(f"global functions;functions = lib.{args.function}.__annotations__")
+    module_name = 'module'
+    spec = importlib.util.spec_from_file_location(module_name, args.file)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    # print(*list(module.__dict__.keys()),sep="\n")
+    # print(list(getattr(module,"hello").__dict__.keys()))
+    if args.function_type == "classmethod":
+        _class = getattr(module,args.function.split(".")[0])
+        function_params = _class.__dict__[args.function.split(".")[1]].__annotations__
+    elif args.function_type == "method":
+        _class = getattr(module,args.function.split(".")[0])
+        function_params = _class.__dict__[args.function.split(".")[1]].__annotations__
+    else:
+        function_params = getattr(module,args.function).__annotations__
     params = params_to_dic(args.params)
-    params = eval_params_values(params,functions)
-    arguments = extract_args(params)
+    params = eval_params_values(params,function_params)
     if args.function_type == "method":
-        exec(f"global init_functions;init_functions = lib.{args.function.split('.')[0]}.__init__.__annotations__")
+        init_params = getattr(module,args.function.split('.')[0]).__init__.__annotations__
         instance_params = params_to_dic(args.instance_params)
-        instance_params = eval_params_values(instance_params,init_functions)
-        instance_args = extract_args(instance_params)
+        instance_params = eval_params_values(instance_params,init_params)
     try:
         if args.function_type == "function":
-            exec(f"fun = lib.{args.function}")
+            fun = getattr(module,args.function)
             if args.print_return:
-                exec(f"print(fun({arguments}))")
+                print(fun(**params))
             else:
-                exec(f"fun({arguments})")
+                fun(**params)
         elif args.function_type == "method":
             class_name = args.function.split(".")[0]
             method_name = ".".join(args.function.split(".")[1:])
-            exec(f"clas = lib.{class_name}")
-            exec(f"ins = clas({instance_args})")
+            _class = getattr(module,class_name)
+            instance = _class(**instance_params)
             if args.print_return:
-                exec(f"print(ins.{method_name}({arguments}))")
+                print(getattr(instance,method_name)(**params))
             else:
-                exec(f"ins.{method_name}({arguments})")
+                getattr(instance,method_name)(**params)
         elif args.function_type == "classmethod":
             if args.print_return:
-                exec(f"print(lib.{args.function}({arguments}))")
+                _class = getattr(module,args.function.split(".")[0])
+                fun = getattr(_class,args.function.split(".")[1])
+                print(fun(**params))
             else:
-                exec(f"lib.{args.function}({arguments})")
+                _class = getattr(module,args.function.split(".")[0])
+                fun = getattr(_class,args.function.split(".")[1])
+                fun(**params)
     except Exception as e:
         print(str(e))
