@@ -16,7 +16,8 @@ def pow(base:int,exponent:int):
         return half_pow * half_pow
     else:
         return base * pow(base, exponent - 1)
-class hello:
+
+class Hello:
     def __init__(self,name:str):
         self.__name = name
     def sum_lists(self,a:list,b:list) -> list:
@@ -26,3 +27,9 @@ class hello:
     def print_hello(self,name:str):
         print(f"hello {name}!!!")
 
+class World:
+    def __init__(self,name:str):
+        pass
+
+def generate_world(name:str) -> World:
+    return World(name)
