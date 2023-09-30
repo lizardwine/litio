@@ -1,11 +1,11 @@
 import argparse
 import importlib.util
 import os
-import args as arguments
+from utils import args as arguments
 import rich
 import yaml
 
-__version__ = '0.5.0.1'
+__version__ = '0.5.0.2'
 
 
 def params_to_dic(params: list) -> dict:
