@@ -1,12 +1,12 @@
-def addOne(n:int):
+def addOne(n:int) -> None:
     print(n + 1)
-def addOneWR(n:int):
+def addOneWR(n:int) -> int:
     return n + 1
 def concatenate_lists(a:list,b:list) -> list:
     print(a)
     a.extend(b)
     return a
-def pow(base:int,exponent:int):
+def pow(base:int,exponent:int) -> int:
     if exponent == 0:
         return 1
     elif exponent < 0:
@@ -24,9 +24,10 @@ class Hello:
         a.extend(b)
         return a
     @classmethod
-    def print_hello(self,name:str):
-        print(name)
-        print(f"hello {name}!!!")
+    def print_hello(self,name:str) -> str:
+        prt = f"hello {name}"
+        print(prt)
+        return prt
 
 class World:
     def __init__(self,name:str):

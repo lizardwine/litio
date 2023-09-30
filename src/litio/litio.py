@@ -10,7 +10,7 @@ parser.add_argument('--params',"-p", default="",nargs="*", help='params to pass 
 parser.add_argument('--print-return', default=False, help='print return value',required=False,type=bool, action=argparse.BooleanOptionalAction)
 parser.add_argument('--assert','-a', dest="assertion", choices=('Equals', 'NotEquals', 'Greater', 'GreaterOrEquals', 'Less', 'LessOrEquals', 'In', 'NotIn', 'Is', 'IsNot', 'IsNone', 'IsNotNone', 'IsInstance', 'IsNotInstance'),help='assert return value',required=False)
 parser.add_argument('--assert-to',"-x", dest="assert_to",help='assert to',required=False)
-parser.add_argument('--version','-v',action='version',version='%(prog)s 0.4.2.1')
+parser.add_argument('--version','-v',action='version',version='%(prog)s 0.4.2.2')
 
 args = parser.parse_args()
 
@@ -44,9 +44,11 @@ def litio():
         else:
             function_type = "method"
         function_params = function.__annotations__
+        return_type = function.__annotations__.get("return")
     else:
         function_type = "function"
         function_params = getattr(module,args.function).__annotations__
+        return_type = function_params.get("return")
         
     params = params_to_dic(args.params)
     params = eval_params_values(params,function_params)
@@ -89,17 +91,22 @@ def litio():
                 print('No assertion to perform')
                 exit(1)
             if args.assertion == "Equals":
-                print(return_value == eval(args.assert_to))
+                if return_type == str:
+                    print(return_value == args.assert_to)
+                elif return_type in [int,float]:
+                    print(return_value == float(args.assert_to))
+                else:
+                    print(return_value == eval(args.assert_to))
             elif args.assertion == "NotEquals":
                 print(return_value != eval(args.assert_to))
             elif args.assertion == "Greater":
-                print(return_value > eval(args.assert_to))
+                print(return_value > float(args.assert_to))
             elif args.assertion == "GreaterOrEquals":
-                print(return_value >= eval(args.assert_to))
+                print(return_value >= float(args.assert_to))
             elif args.assertion == "Less":
-                print(return_value < eval(args.assert_to))
+                print(return_value < float(args.assert_to))
             elif args.assertion == "LessOrEquals":
-                print(return_value <= eval(args.assert_to))
+                print(return_value <= float(args.assert_to))
             elif args.assertion == "In":
                 print(return_value in eval(args.assert_to))
             elif args.assertion == "NotIn":
@@ -119,3 +126,4 @@ def litio():
     except Exception as e:
         print(str(e))
         exit(1)
+litio()
