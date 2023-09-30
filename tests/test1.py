@@ -25,6 +25,7 @@ class Hello:
         return a
     @classmethod
     def print_hello(self,name:str):
+        print(name)
         print(f"hello {name}!!!")
 
 class World:

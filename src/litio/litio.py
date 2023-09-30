@@ -10,7 +10,7 @@ parser.add_argument('--params',"-p", default="",nargs="*", help='params to pass 
 parser.add_argument('--print-return', default=False, help='print return value',required=False,type=bool, action=argparse.BooleanOptionalAction)
 parser.add_argument('--assert','-a', dest="assertion", choices=('Equals', 'NotEquals', 'Greater', 'GreaterOrEquals', 'Less', 'LessOrEquals', 'In', 'NotIn', 'Is', 'IsNot', 'IsNone', 'IsNotNone', 'IsInstance', 'IsNotInstance'),help='assert return value',required=False)
 parser.add_argument('--assert-to',"-x", dest="assert_to",help='assert to',required=False)
-parser.add_argument('--version','-v',action='version',version='%(prog)s 0.4.2.0')
+parser.add_argument('--version','-v',action='version',version='%(prog)s 0.4.2.1')
 
 args = parser.parse_args()
 
@@ -28,7 +28,7 @@ def eval_params_values(params: dict,functions: dict) -> dict:
         elif functions[key] != str:
             params[key] = eval(value)
         else:
-            params[key] = f'"{value}"'
+            params[key] = f'{value}'
     return params
 
 def litio():
@@ -118,3 +118,4 @@ def litio():
                 print(return_value.__class__ != getattr(module,args.assert_to))
     except Exception as e:
         print(str(e))
+        exit(1)
