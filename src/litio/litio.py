@@ -1,12 +1,15 @@
 import argparse
 import importlib.util
 import os
-from utils import args as arguments
 import rich
 import yaml
 
-__version__ = '0.5.0.2'
+__version__ = '0.5.0.3'
 
+class Args:
+    def __init__(self, args):
+        for key, value in args.items():
+            setattr(self, key, value)
 
 def params_to_dic(params: list) -> dict:
     dict_params = {}
@@ -180,7 +183,7 @@ def litio():
                     argsDitctionary.update({"print_return":False})
                 else:
                     argsDitctionary.update({"print_return":function[function_name]["print-return"]})
-                argsToMain = arguments.Args(argsDitctionary)
+                argsToMain = Args(argsDitctionary)
                 to_print, assertion = Main(argsToMain)
                 if argsToMain.print_return:
                     rich.print(f"[bold yellow]           -  returned: {to_print}[/bold yellow]")
