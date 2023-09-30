@@ -5,8 +5,7 @@ import importlib.util
 parser = argparse.ArgumentParser(description='A command line function tester',epilog="Usage example: litio adding.py --function add --function-type function --params number1 200 number2 300")
 parser.add_argument('file', metavar='file', type=str, help='file to execute')
 parser.add_argument('--function',"-f",default="", help='function to execute',required=True)
-parser.add_argument("--function-type","-t",dest="function_type",choices=("function","method","classmethod"),help='function type',required=True)
-parser.add_argument('--instance-params',"-i",dest="instance_params", default="",nargs="*", help='params to pass to the function',required=False)
+parser.add_argument('--instance-params',"-i",dest="instance_params", default="",nargs="*", help='params to instance the class(used for tests methods)',required=False)
 parser.add_argument('--params',"-p", default="",nargs="*", help='params to pass to the function',required=False)
 parser.add_argument('--print-return', default=False, help='print return value',required=False,type=bool, action=argparse.BooleanOptionalAction)
 parser.add_argument('--assert','-a', dest="assertion", choices=('Equals', 'NotEquals', 'Greater', 'GreaterOrEquals', 'Less', 'LessOrEquals', 'In', 'NotIn', 'Is', 'IsNot', 'IsNone', 'IsNotNone', 'IsInstance', 'IsNotInstance'),help='assert return value',required=False)
@@ -37,30 +36,34 @@ def litio():
     spec = importlib.util.spec_from_file_location(module_name, args.file)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    if args.function_type == "classmethod":
+    if "." in args.function:
         _class = getattr(module,args.function.split(".")[0])
-        function_params = _class.__dict__[args.function.split(".")[1]].__annotations__
-    elif args.function_type == "method":
-        _class = getattr(module,args.function.split(".")[0])
-        function_params = _class.__dict__[args.function.split(".")[1]].__annotations__
+        function = _class.__dict__[args.function.split(".")[1]]
+        if type(function) == classmethod:
+            function_type = "classmethod"
+        else:
+            function_type = "method"
+        function_params = function.__annotations__
     else:
+        function_type = "function"
         function_params = getattr(module,args.function).__annotations__
+        
     params = params_to_dic(args.params)
     params = eval_params_values(params,function_params)
     return_value = None
-    if args.function_type == "method":
+    if function_type == "method":
         init_params = getattr(module,args.function.split('.')[0]).__init__.__annotations__
         instance_params = params_to_dic(args.instance_params)
         instance_params = eval_params_values(instance_params,init_params)
     try:
-        if args.function_type == "function":
+        if function_type == "function":
             fun = getattr(module,args.function)
             if args.print_return:
                 return_value = fun(**params)
                 print(return_value)
             else:
                 return_value = fun(**params)
-        elif args.function_type == "method":
+        elif function_type == "method":
             class_name = args.function.split(".")[0]
             method_name = ".".join(args.function.split(".")[1:])
             _class = getattr(module,class_name)
@@ -70,7 +73,7 @@ def litio():
                 print(return_value)
             else:
                 return_value = getattr(instance,method_name)(**params)
-        elif args.function_type == "classmethod":
+        elif function_type == "classmethod":
             if args.print_return:
                 _class = getattr(module,args.function.split(".")[0])
                 fun = getattr(_class,args.function.split(".")[1])
