@@ -14,7 +14,7 @@ setup(
         "Bug Tracker": "https://github.com/lizardwine/litio/issues",
     },
     license='GPL v3.0',
-    version='0.4.2.3',
+    version='0.5.0.0',
     keywords=['testing', 'tester'],
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
@@ -31,6 +31,7 @@ setup(
         ]
     },
     package_dir={"": "src"},
+    requires=['pyyaml','rich'],
     packages=find_packages(where="src"),
     python_requires=">=3.6",
 )

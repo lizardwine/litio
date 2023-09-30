@@ -26,7 +26,6 @@ class Hello:
     @classmethod
     def print_hello(self,name:str) -> str:
         prt = f"hello {name}"
-        print(prt)
         return prt
 
 class World:
