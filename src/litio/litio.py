@@ -10,7 +10,7 @@ parser.add_argument('--params',"-p", default="",nargs="*", help='params to pass 
 parser.add_argument('--print-return', default=False, help='print return value',required=False,type=bool, action=argparse.BooleanOptionalAction)
 parser.add_argument('--assert','-a', dest="assertion", choices=('Equals', 'NotEquals', 'Greater', 'GreaterOrEquals', 'Less', 'LessOrEquals', 'In', 'NotIn', 'Is', 'IsNot', 'IsNone', 'IsNotNone', 'IsInstance', 'IsNotInstance'),help='assert return value',required=False)
 parser.add_argument('--assert-to',"-x", dest="assert_to",help='assert to',required=False)
-parser.add_argument('--version','-v',action='version',version='%(prog)s 0.4.1.0')
+parser.add_argument('--version','-v',action='version',version='%(prog)s 0.4.2.0')
 
 args = parser.parse_args()
 
