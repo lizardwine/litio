@@ -118,4 +118,3 @@ def litio():
                 print(return_value.__class__ != getattr(module,args.assert_to))
     except Exception as e:
         print(str(e))
-litio()
