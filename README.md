@@ -1,4 +1,4 @@
-A command line function tester
+A simple tool for testing
 
 # litio
 
