@@ -9,6 +9,7 @@ setup(
     name='litio',
     description='A simple tool for testing',
     long_description=readme,
+    long_description_content_type='text/markdown',
     url='https://github.com/lizardwine/litio',
     project_urls={
         "Bug Tracker": "https://github.com/lizardwine/litio/issues",
