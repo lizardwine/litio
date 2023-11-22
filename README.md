@@ -7,22 +7,30 @@ A command line function tester
 example 1:
 
 ```
-$ litio main.py --function say_hello --params say_to joe
-hello joe!
+python3 -m litio -c litio-config.yml
 ```
 
+litio-config.yml:
+```yaml
+name: My Awesome Title
 
-
-example 2:
-
+tests:
+  firsth-test: # test name
+    path: ./tests/test1.py # path to python file
+    functions: # functions list
+      - pow: # function name
+          inputs: # inputs
+            # arguments with name of parameters
+            base: 2
+            exponent: 2
+          expected:
+            value: 4 # expected value
+            comparator: Equals
+          print-return: true # print returned value by function
 ```
-$ litio main.py --function concatenate --params striing_a "hello" string_b " world"
-hello world
-```
 
-example 3:
-
-```
-$ litio main.py -f pow -p base 2 exponent 3 --print-return
-8
+test1.py:
+```python
+def pow(base, exponent):
+    return base**exponent
 ```

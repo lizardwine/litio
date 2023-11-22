@@ -1,2 +1,2 @@
-def addOneWR(n:int) -> int:
+def addOneWR(n):
     return n + 1
