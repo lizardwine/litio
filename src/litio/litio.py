@@ -4,7 +4,7 @@ import os
 import rich
 import yaml
 
-__version__ = '1.0.0.0'
+__version__ = '1.0.0.1'
 
 class Args:
     def __init__(self, args):
@@ -124,7 +124,7 @@ def Main(args):
             return to_return, False
 
 def litio():
-    parser = argparse.ArgumentParser(description='A command line function tester',epilog="Usage example: litio adding.py --function add --params number1 200 number2 300")
+    parser = argparse.ArgumentParser(description='A command line function tester')
     parser.add_argument('--version','-v',action='version',version='%(prog)s {}'.format(__version__))
     parser.add_argument('--config-file','-c',dest="config_file",help='config file',required=False, default="litio.yml")
     parser.add_argument('--verbose', '-V', dest="verbose", help="enable verbosity", required=False, action=argparse.BooleanOptionalAction)
