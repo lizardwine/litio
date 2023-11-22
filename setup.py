@@ -4,7 +4,7 @@ with open('README.md', 'r') as reader:
     readme = reader.read()
 
 setup(
-    author='Lizard wine',
+    author='Lizardwine',
     author_email='lizardwine@hotmail.com',
     name='litio',
     description='A command line function tester',
@@ -14,7 +14,7 @@ setup(
         "Bug Tracker": "https://github.com/lizardwine/litio/issues",
     },
     license='GPL v3.0',
-    version='0.5.0.3',
+    version='0.5.1.0',
     keywords=['testing', 'tester'],
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
@@ -31,7 +31,7 @@ setup(
         ]
     },
     package_dir={"": "src"},
-    requires=['pyyaml','rich'],
+    install_requires=['pyyaml==6.0.1','rich==13.7.0'],
     packages=find_packages(where="src"),
     python_requires=">=3.6",
 )

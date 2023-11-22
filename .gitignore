@@ -2,3 +2,4 @@ dist/
 litio.egg-info
 __pycache__
 litio.yml
+env
