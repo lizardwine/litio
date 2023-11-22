@@ -4,7 +4,7 @@ import os
 import rich
 import yaml
 
-__version__ = '1.0.0.1'
+__version__ = '1.0.0.2'
 
 class Args:
     def __init__(self, args):
@@ -157,9 +157,9 @@ def litio():
             if function[function_name].get('instance'):
                 argsDitctionary.update({"instance_params":function[function_name]["instance"]})
             if not function[function_name].get('print-return'):
-                argsDitctionary.update({"print_return":False})
+                argsDitctionary.update({"print_return":False or args.verbose})
             else:
-                argsDitctionary.update({"print_return":function[function_name]["print-return"]})
+                argsDitctionary.update({"print_return":function[function_name]["print-return"] or args.verbose})
             argsToMain = Args(argsDitctionary)
             to_print, assertion = Main(argsToMain)
             if args.verbose:
