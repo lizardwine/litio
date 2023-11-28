@@ -3,7 +3,12 @@ from setuptools import setup,find_packages
 with open('README.md', 'r') as reader:
     readme = reader.read()
 
-requirements = open("requirements.txt", "r").read().splitlines()
+requirements = [
+    "PyYAML==6.0.1",
+    "rich==13.7.0",
+    "openai==1.3.5",
+    "python-dotenv==1.0.0",
+]
 
 setup(
     author='Lizardwine',
