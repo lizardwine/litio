@@ -28,15 +28,15 @@ class BugFixer:
 def fix_bug(function_name, path, data, inputs, function, main_response, args):
     if function[function_name].get('use-ai') or function[function_name].get('auto-fix'):
         if function[function_name]["expected"].get("comparator") != "Equals":
-            rich.print("[bold red]          - Cannot use ai with assertion other than Equals[/bold red]")
+            rich.print(f"[bold red]Test for {function_name}: Cannot use ai with assertion other than Equals[/bold red]")
             return
         if not data.get("api-key"):
-            rich.print("[bold red]          - Cannot use ai without OpenAI api-key[/bold red]")
+            rich.print("[bold red]Cannot use ai without OpenAI api-key[/bold red]")
             return
         
         func_code = utils.extract_function_code(function_name, path)
         if not func_code:
-            rich.print("[bold red]          - Cannot find function code[/bold red]")
+            rich.print(f"[bold red]Test for {function_name}: Cannot find function code[/bold red]")
             return
         bug_fixer = BugFixer(func_code, function_name, inputs, function[function_name]["expected"]["value"], [main_response if isinstance(main_response, str) else main_response[0], isinstance(main_response, str)], data["api-key"])
         if isinstance(main_response, str):
@@ -45,7 +45,7 @@ def fix_bug(function_name, path, data, inputs, function, main_response, args):
             bug = f"{main_response[0]} is not {function[function_name]['expected']['value']}"
         
         if function[function_name].get('auto-fix'):
-            rich.print(f"[bold yellow]           - Auto fixing bug: '{bug}' in '{function_name}' using AI[/bold yellow]")
+            rich.print(f"[bold yellow]Auto fixing bug: '{bug}' in '{function_name}' using AI[/bold yellow]")
         else:
             fix_bug = input(f"Do you want to fix the bug: '{bug}' in '{function_name}' using AI? (Y/n) ")
             if fix_bug.lower() != "y":
@@ -74,10 +74,10 @@ def fix_bug(function_name, path, data, inputs, function, main_response, args):
         
         test_fixed_bug = tester.test(args_for_main)
         if isinstance(test_fixed_bug, str):
-            rich.print("[bold red]           - Bug fixed failed[/bold red]")
-        rich.print("[bold green]           - Bug fixed successfully[/bold green]")
+            rich.print("[bold red]Bug fixed failed[/bold red]")
+        rich.print("[bold green]Bug fixed successfully[/bold green]")
         if function[function_name].get('auto-fix'):
-            rich.print("[bold yellow]           - Auto replacing the original code with the fixed code[/bold yellow]")
+            rich.print("[bold yellow]Auto replacing the original code with the fixed code[/bold yellow]")
         else:
             replace = input("Do you want to replace the original code with the fixed code? (Y/n) ")
             if replace.lower() != "y":
@@ -86,6 +86,7 @@ def fix_bug(function_name, path, data, inputs, function, main_response, args):
         all_code = all_code.replace(func_code, fixed_bug)
         with open(path, 'w') as f:
             f.write(all_code)
-        rich.print("[bold green]           - Code replaced successfully[/bold green]")
+        rich.print("[bold green]Code replaced successfully[/bold green]")
         os.remove(f"fixed_bug_{function_name}.tests.py")
         return test_fixed_bug
+    return main_response

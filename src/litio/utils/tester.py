@@ -8,13 +8,12 @@ def test(args: utils.Args):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         if "." in args.function:
-            _class = getattr(module,args.function.split(".")[0], None)
+            module.__dict__
+            _class = module.__dict__.get(args.function.split(".")[0], None)
             if not _class:
-                rich.print("[bold red]           - Class not found[/bold red]")
                 return None
             function = _class.__dict__.get(args.function.split(".")[1])
             if not function:
-                rich.print("[bold red]           - Method not found[/bold red]")
                 return None
             if type(function) == classmethod:
                 function_type = "classmethod"
@@ -23,9 +22,8 @@ def test(args: utils.Args):
             function_params = function.__annotations__
         else:
             function_type = "function"
-            function_params = getattr(module,args.function, None)
+            function_params = module.__dict__.get(args.function, None)
             if not function_params:
-                rich.print("[bold red]           - Function not found[/bold red]")
                 return None
             function_params = function_params.__annotations__
         if type(args.params) == list:    
@@ -35,7 +33,7 @@ def test(args: utils.Args):
             params = args.params
         to_return_assert = None
         if function_type == "method":
-            init_params = getattr(module,args.function.split('.')[0]).__init__.__annotations__
+            init_params = module.__dict__.get(args.function.split('.')[0]).__init__.__annotations__
             if type(args.instance_params) == list:    
                 instance_params = utils.params_to_dic(args.instance_params)
                 instance_params = utils.eval_params_values(instance_params,init_params)
@@ -98,6 +96,10 @@ def test(args: utils.Args):
                     to_return_assert = (to_return.__class__ == getattr(module,args.assert_to))
                 elif args.assertion == "IsNotInstance":
                     to_return_assert = (to_return.__class__ != getattr(module,args.assert_to))
+                else:
+                    to_return_assert = False
+                    to_return = (f"Assertion '{args.assertion}' not found")
             return [to_return,to_return_assert]
         except Exception as e:
             return to_return, False
+            

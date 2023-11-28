@@ -1,5 +1,7 @@
 name: My Awesome Title
 api-key: OPENAI_API_KEY # the name of the environment variable, NOT THE API KEY!
+
+
 tests:
   firsth-test: # test name
     path: ./tests/test1.py # path to python file
@@ -18,8 +20,17 @@ tests:
             n: 1
           expected:
             value: 2
-            comparator: Equals
+            comparator: NotEquals
           verbose: true
+          ignore: true
+      - addOne:
+          inputs:
+            n: 1
+          expected:
+            value: 2
+            comparator: Equals
+          verbose: false
+          auto-fix: true
   second-test:
     path: ./tests/test1.py
     functions:
@@ -38,6 +49,7 @@ tests:
             value: World
             comparator: IsInstance
           verbose: true
+          ignore: true
   classes-test:
     path: ./tests/tests2.py
     functions:
@@ -49,11 +61,23 @@ tests:
             value: 30
             comparator: Equals
           verbose: true
+          auto-fix: true
       - Person.get_name:
           instance:
             name: John
             age: 30
           expected:
             value: John
+            comparator: Equals
+          verbose: true
+          use-ai: true
+  other-tests:
+    path: ./tests/tests2.py
+    functions:
+      - addOneWR:
+          inputs:
+            n: 1
+          expected:
+            value: 2
             comparator: Equals
           verbose: true

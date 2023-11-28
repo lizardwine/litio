@@ -1,5 +1,5 @@
 def addOne(n):
-    print(n + 1)
+    return n + 1
 def addOneWR(n):
     return n + 1
 def concatenate_lists(a, b):

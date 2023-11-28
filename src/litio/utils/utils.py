@@ -3,14 +3,15 @@ import re
 
 def extract_function_code(function_name, source_file):
     # Build the regex pattern to find the function
-    function_pattern = re.compile(fr'(\bdef {function_name}\(.*?\):)(?:\n(.*?)(?=\n\s*def|\n\s*class|\n\s*$))?', re.DOTALL)
+    if '.' in function_name:
+        function_name = function_name.split('.')[1]
+    function_pattern = re.compile(fr'(\bdef {function_name}\(.*?\):)(?:\n(.*?)(?=\n\s*def|\n\s*class|\n*$))?', re.DOTALL)
     
     with open(source_file, 'r') as file:
         content = file.read()
 
     # Search for the function in the file content
     matches = function_pattern.search(content)
-
     if matches:
         # The function was found, return the code
         function_declaration = matches.group(1)
@@ -57,3 +58,14 @@ def eval_params_values(params: dict,functions: dict) -> dict:
         else:
             params[key] = f'{value}'
     return params
+
+class OutputArgs:
+    def __init__(self, title: str, groups: list = []):
+        self.title = title
+        self.groups = groups
+    def add_group(self, groups: dict):
+        self.groups.append(groups)
+    def add_test(self, test: dict, group_name: str):
+        for group in self.groups:
+            if group["name"] == group_name:
+                group["tests"].append(test)
