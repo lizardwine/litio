@@ -3,20 +3,10 @@ def addOne(n):
 def addOneWR(n):
     return n + 1
 def concatenate_lists(a, b):
-    print(a)
-    a.extend(b)
-    return a
+    return a + b
 def pow(base, exponent):
-    if exponent == 0:
-        return 1
-    elif exponent < 0:
-        return 1 / pow(base, -exponent)
-    elif exponent % 2 == 0:
-        half_pow = pow(base, exponent // 2)
-        return half_pow * half_pow
-    else:
-        return base * pow(base, exponent - 1)
-
+    return base**exponent
+  
 class Hello:
     def __init__(self,name):
         self.__name = name
