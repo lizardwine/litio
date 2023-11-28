@@ -31,7 +31,6 @@ tests:
           expected:
             value: 4 # expected value
             comparator: Equals
-          print-return: true # print returned value by function
 ```
 
 ### test1.py:
@@ -72,6 +71,29 @@ tests:
 ## how auto-fix works?
 The "auto-fix" parameter instructs litio to use artificial intelligence to automatically repair and replace the function in the source code. If you prefer to confirm before consulting AI, you can use the "use-ai" parameter instead of "auto-fix."
 
+## example 3: if a tests is not ready yet?
+
+### test3.py:
+```python
+def coming_soon():
+    pass # it's not ready yet
+```
+
+litio-config.yml:
+```yaml
+name: My Awesome Title
+tests:
+  not-ready-test:
+    path: ./tests/test3.py
+    functions: 
+      - coming_soon:
+          expected:
+            value: i am not ready yet
+            comparator: Equals
+          ignore: true # ignore this test and continue
+```
+
+
 # Litio config file reference
 
 ## `name` paramater
@@ -81,6 +103,9 @@ The "auto-fix" parameter instructs litio to use artificial intelligence to autom
 ## `api-key` parameter
 
 - The `api-key` parameter is the name of the environment variable that contains the OpenAI API key, NOT THE API KEY!
+
+## `output-style` parameter
+- The `output-style` parameter is the style of the output. It can be `capybara` or `classic` for now.
 
 ## `tests` parameter
 
@@ -110,10 +135,10 @@ tests:
 - The function name is the name of the function.
 - The `inputs` parameter is a dictionary of inputs.
 - The `expected` parameter is a dictionary with expected value and comparator.
-- The `print-return` parameter is a boolean that indicates whether to print the returned value.
-- The `verbose` parameter is a boolean that indicates whether to print the full function call. Included the returned value.
+- The `verbose` parameter is a boolean that indicates whether to print the full function call.
 - The `auto-fix` parameter is a boolean that indicates whether to use AI to automatically fix the function. Only can be used with the `Equals` comparator.
 - The `use-ai` parameter is a boolean that indicates whether to use AI to fix the function. Only can be used with the `Equals` comparator.
+- The `ignore` parameter is a boolean that indicates whether to ignore the function.
 
 Looks like this:
 ```yaml
