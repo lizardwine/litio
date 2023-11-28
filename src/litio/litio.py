@@ -2,7 +2,10 @@ import argparse
 import os
 import rich
 import yaml
-from utils import ai, utils, tester
+try:     
+    from utils import ai, utils, tester
+except ModuleNotFoundError:
+    from .utils import ai, utils, tester
 
 __version__ = '1.1.0.0'
 
