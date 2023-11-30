@@ -42,7 +42,7 @@ class Args:
         for key, value in args.items():
             setattr(self, key, value)
 
-def params_to_dic(params: list) -> dict:
+def params_to_dict(params: list) -> dict:
     dict_params = {}
     for i in range(0,len(params),2):
         param = {params[i]:params[i+1]}
