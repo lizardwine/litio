@@ -28,8 +28,18 @@ def output_classic(args: utils.OutputArgs):
                 for key, value in test['instance_params'].items():
                     value = f"'{value}'" if isinstance(value, str) else value
                     rich.print(f"[bold yellow]{' '*14}- {key}: {value}[/bold yellow]")
-            assert_to = test['assert_to']
-            assert_to = f"'{assert_to}'" if isinstance(assert_to, str) else assert_to
+            assert_to = test.get('assert_to', None)
+            if not assert_to:
+                assert_to_dot = test.get('assert_to_dot', None)
+                if not assert_to_dot:
+                    rich.print(f"[bold red]{' '*12}-Cannot understand expected.value[/bold red]")
+                    rich.print(f"[bold red]{' '*12}-Test: failed[/bold red]")
+                    continue
+                assert_to_dot = [assert_to_dot[0], ".".join([str(_assert) for _assert in assert_to_dot[1]])]
+                assert_to_dot[1] = assert_to_dot[1].replace(';',':')
+                assert_to = f"'{assert_to_dot[0]}'; in value.{assert_to_dot[1]}" if isinstance(assert_to_dot[0], str) else f"{assert_to_dot[0]}; in value.{assert_to_dot[1]}"
+            else:
+                assert_to = f"'{assert_to}'" if isinstance(assert_to, str) else assert_to
             returned = test['status']['reason']
             returned = f"'{returned}'" if isinstance(returned, str) else returned
             
@@ -51,8 +61,11 @@ def capybara_output(args: utils.OutputArgs):
         not_passed_tests = len([test for test in group["tests"] if not test.get('status', {'passed': True}).get('passed')])
         ignored = len([test for test in group["tests"] if test.get("ignore")])
         print(f"[{group_name}] ✔️  Passed {passed_tests} ❌ Errors {not_passed_tests}  ⚠️  Ignored {ignored}")
-        most_largest_name = max(len(test["name"]) for test in [group for group in args.groups])
-        
+        most_largest_name = 0
+        for _group in args.groups:
+            for test in _group["tests"]:
+                if len(test['name']) > most_largest_name:
+                    most_largest_name = len(test['name'])
         for test in group["tests"]:
             if test.get('ignore'):
                 tabs = most_largest_name + 6 - len(test['name'])

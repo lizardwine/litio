@@ -12,7 +12,7 @@ pip install litio
 ```
 ### run
 ```bash
-python3 -m litio -c litio-config.yml
+litio -c litio-config.yml
 ```
 
 ### litio-config.yml:
@@ -177,6 +177,81 @@ tests:
             comparator: Equals
 
 ```
+
+## The expected parameter
+
+- The `comparator` parameter is the way to compare the expected value.
+- The `value` parameter is the expected value.
++ you can access the attributes of the returned object using the dot notation. Look like this:
+```yaml
+...
+- add_lists:
+    inputs:
+      a: [1, 2]
+      b: [3, 4]
+    expected:
+      # the value returned is [1, 2, 3, 4]
+      value.0: 1 # access to value[0]
+      comparator: Equals
+```
+you also can use ranges:
+```yaml
+...
+- add_lists:
+    inputs:
+      a: [1, 2]
+      b: [3, 4]
+    expected:
+      # the value returned is [1, 2, 3, 4]
+      value.1;3: 1 # access to the range value[1:3]
+      # NOTE: use semicolon(;) to indicate the range(e.g. value.1;3), not the colon(:) because conflict with the yaml syntax
+      comparator: Equals
+```
+you can also use spacing in the range:
+```yaml
+...
+- add_lists:
+    inputs:
+      a: [1, 2]
+      b: [3, 4]
+    expected:
+      value.;;2: [1, 3] # access to value[::2]
+      comparator: Equals
+```
+you also can access to a key in the dictionary:
+```yaml
+...
+- add_dicts:
+    inputs:
+      a: {"a": 1, "b": 2}
+      b: {"c": 3, "d": 4}
+    expected:
+      value.a: 1
+      comparator: Equals
+```
+you also can use dot notation multiple times:
+```yaml
+...
+- add_dicts:
+    inputs:
+      a: {"a": {"b": 1}}
+      b: {"c": {"d": 2}}
+    expected:
+      value.a.b: 1 # access to value["a"]["b"]
+      comparator: Equals
+```
+if function returns an object, you can access to the attributes of that object using the dot notation:
+```yaml
+...
+- create_person_object:
+    inputs:
+      name: John
+      age: 30
+    expected:
+      value.name: John # access to value.name
+      comparator: Equals
+
+
 
 ## What comparators are there?
 
