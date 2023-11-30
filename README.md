@@ -250,7 +250,7 @@ if function returns an object, you can access to the attributes of that object u
     expected:
       value.name: John # access to value.name
       comparator: Equals
-
+```
 
 
 ## What comparators are there?
