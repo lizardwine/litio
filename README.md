@@ -187,7 +187,7 @@ tests:
 - `LessOrEqual`
 - `NotEquals`
 - `Is`
-- `isNot`
+- `IsNot`
 - `IsNone`
 - `IsNotNone`
 - `IsInstance`
