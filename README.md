@@ -306,6 +306,8 @@ litio = {
 }
 ```
 
+### When your module is ready to use, you can publish it to github and install it using `litio install you/your-module-name` example: `litio install lizardwine/litio-package`
+
 ## litio dictionary reference
 ### you can repleace any litio function
 - output: you can add and replace any output style
