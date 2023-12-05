@@ -1,20 +1,39 @@
+api-key: OPENAI_API_KEY
+
 name: My Awesome Title
-api-key: OPENAI_API_KEY # the name of the environment variable, NOT THE API KEY!
-
-
 tests:
-  firsth-test: # test name
-    path: ./tests/test1.py # path to python file
-    functions: # functions list
-      - pow: # function name
-          inputs: # inputs
-            # arguments with name of parameters
+  classes-test:
+    path: ./tests2.py
+    functions:
+      - Person.get_age:
+          instance:
+            age: 30
+            name: John
+          expected:
+            value: 30
+            comparator: Equals
+          verbose: true
+          auto-fix: true
+      - Person.get_name:
+          instance:
+            age: 30
+            name: John
+          expected:
+            value: John
+            comparator: Equals
+          use-ai: true
+          verbose: true
+  firsth-test:
+    path: ./test1.py
+    functions:
+      - pow:
+          inputs:
             base: 3
             exponent: 7
           expected:
-            value: 2187 # expected value
+            value: 2187
             comparator: Equals
-          verbose: true # print full function call
+          verbose: true
       - addOneWR:
           inputs:
             n: 1
@@ -30,67 +49,47 @@ tests:
             comparator: Equals
           verbose: false
           auto-fix: true
-  second-test:
-    path: ./tests/test1.py
-    functions:
-      - concatenate_lists:
-          inputs:
-            a: [1, 2, 3]
-            b: [4, 5, 6]
-          expected:
-            value.0: 1
-            comparator: Equals
-          verbose: true
-      - concatenate_lists:
-          inputs:
-            a: [1, 2, 3]
-            b: [4, 5, 6]
-          expected:
-            value.0;2.;;-1: [2,1]
-            comparator: Equals
-          verbose: true
-      - concatenate_dicts:
-          inputs:
-            a: {"a": 1, "b": 2}
-            b: {"c": 3, "d": 4}
-          expected:
-            value.d: 4
-            comparator: Equals
-      - generate_world:
-          inputs:
-            name: John
-          expected:
-            value.name.name: John
-            comparator: Equals
-          verbose: true
-  classes-test:
-    path: ./tests/tests2.py
-    functions:
-      - Person.get_age:
-          instance:
-            name: John
-            age: 30
-          expected:
-            value: 30
-            comparator: Equals
-          verbose: true
-          auto-fix: true
-      - Person.get_name:
-          instance:
-            name: John
-            age: 30
-          expected:
-            value: John
-            comparator: Equals
-          verbose: true
-          use-ai: true
   other-tests:
-    path: ./tests/tests2.py
+    path: ./tests2.py
     functions:
       - addOneWR:
+          expected:
+            comparator: Equals
+            value: 2
           inputs:
             n: 1
-          expected:
-            value: 2
-            comparator: Equals
           verbose: true
+  second-test:
+    path: ./test1.py
+    functions:
+    - concatenate_lists:
+        inputs:
+          a: [1, 2, 3]
+          b: [4, 5, 6]
+        expected:
+          value.0: 1
+          comparator: Equals
+        verbose: true
+    - concatenate_lists:
+        inputs:
+          a: [1, 2, 3]
+          b: [4, 5, 6]
+        expected:
+          value.0;2.;;-1: [2, 1]
+          comparator: Equals
+        verbose: true
+    - concatenate_dicts:
+        inputs:
+          a: {"a": 1, "b": 2}
+          b: {"c": 3, "d": 4}
+        expected:
+          value.d: 4
+          comparator: Equals
+    - generate_world:
+        inputs:
+          name: John
+        expected:
+          value.name.name: John
+          comparator: Equals
+        verbose: true
+

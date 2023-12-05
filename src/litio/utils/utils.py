@@ -42,6 +42,11 @@ class Args:
         for key, value in args.items():
             setattr(self, key, value)
 
+class Kwargs:
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
 def params_to_dict(params: list) -> dict:
     dict_params = {}
     for i in range(0,len(params),2):

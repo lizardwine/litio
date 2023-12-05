@@ -1,7 +1,7 @@
 import rich
-from . import utils, info
+from . import info
 
-def output_classic(args: utils.OutputArgs):
+def output_classic(args):
     rich.print(f"[bold cyan]{args.title}[/bold cyan]")
     for group in args.groups:
         rich.print(f"[bold blue]{' '*4}- {group['name']}[/bold blue]")
@@ -51,7 +51,7 @@ def output_classic(args: utils.OutputArgs):
             else:
                 rich.print(f"[bold red]{' '*12}-Test: failed[/bold red]")
 
-def capybara_output(args: utils.OutputArgs):
+def capybara_output(args):
     rich.print(f"[bold blue]Litio[/bold blue][bold green]@[/bold green][bold blue]{info.__version__}[/bold blue] - [bold green]{args.title}[/bold green]")
     for group in args.groups:
         group_name = group["name"]
@@ -82,10 +82,6 @@ def capybara_output(args: utils.OutputArgs):
                 tabs = ' '*tabs
                 print(f"{' '*3}- {test['name']}{tabs}{'❌  Error'} \"{test['status']['reason']}\"")
         print() # new line
-outputs = {
-    'classic': output_classic,
-    'capybara': capybara_output
-}
 
-def output(args: utils.OutputArgs, style):
+def output(args, style, outputs={}):
     outputs.get(style, capybara_output)(args)

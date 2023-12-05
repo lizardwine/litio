@@ -12,10 +12,10 @@ pip install litio
 ```
 ### run
 ```bash
-litio -c litio-config.yml
+litio run
 ```
 
-### litio-config.yml:
+### litio.yml
 ```yaml
 name: My Awesome Title
 
@@ -49,7 +49,7 @@ def pow(base, exponent):
 
 
 
-litio-config.yml:
+litio.yml:
 ```yaml
 name: My Awesome Title
 api-key: YOUR_OPENAI_API_KEY_ENVIRONMENT_VARIABLE # the name of the environment variable, NOT THE API KEY!
@@ -79,7 +79,7 @@ def coming_soon():
     pass # it's not ready yet
 ```
 
-litio-config.yml:
+litio.yml:
 ```yaml
 name: My Awesome Title
 tests:
@@ -93,8 +93,26 @@ tests:
           ignore: true # ignore this test and continue
 ```
 
+# Litio commands
 
+- ## `run`
+  - Action: Runs the tests.
+  - parameters:
+    - `--verbose`(aliases: `-V`): Prints the full function call.
+    - `--output`(aliases: `-o`): The style of the output. It can be `capybara` or `classic` or you can install a custom style.
+    - `--ai`/`--no-ai`: enable/disable auto-fix using AI.
+- ## `install`
+  - Action: Installs a Litio package.
+  - parameters:
+    - `module`: The name of the module to install, must be in format `author/module` or `author/module@version`.
+    - `--upgrade`(aliases: `-u`): install the latest version of the module.
+ - ## `uninstall`
+  - Action: Uninstalls a Litio package.
+  - parameters:
+    - `module`: The name of the module to uninstall, must be in format `author/module`.
 # Litio config file reference
+
+### The config file must be in YAML format and named `litio.yml`
 
 ## `name` paramater
 
@@ -267,3 +285,54 @@ if function returns an object, you can access to the attributes of that object u
 - `IsNotNone`
 - `IsInstance`
 - `IsNotInstance`
+
+# How can i create a module?
+
+### Every module must have a `litio.py` file in root directory.
+
+### Example module for output styles:
+
+#### litio.py
+```python
+import ... # your dependecies here
+
+def my_own_output_style(args):
+    ... # your code here
+
+litio = {
+  'output': {
+    'my-own-output-style-name': my_own_output_style
+  }
+}
+```
+
+## litio dictionary reference
+### you can repleace any litio function
+- output: you can add and replace any output style
+  - `classic`: classic output
+  - `capybara`: capybara output
+- options: you can add and replace any option for litio command
+  - `--verson`: shows the litio version and exit
+
+- sub_commands: you can add and replace any sub command
+  - `run`: run the tests in litio.yml
+  - `install`: install a module
+  - `uninstall`: uninstall a module
+- utils: you can add and replace any utility
+  - `extract_function_code`: extract the code of a function from a file
+  - `Args`: set self attributes from a dictionary
+  - `OutputArgs`: an organizer for the output arguments
+  - `params_to_dict`: convert a list of parameters to a dictionary
+  - `eval_param_values`: evaluate the values of a list of parameters
+  - `Kwargs`: set self attributes from a keyword arguments
+
+- tester: you can replace the tester function
+  - `test`: test a function with the given inputs and expected values
+
+- ai: you can add or replace any AI powered function
+  - `BugFixer`: class for bug fixing
+  - `fix_bug`: fix a bug in a function with BugFixer
+
+
+
+#### If you module has dependencies, you must add them in `requirements.txt` file in root directory.

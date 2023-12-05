@@ -2,8 +2,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import rich
-from . import utils
-from . import tester
+
 
 class BugFixer:
     def __init__(self, function, function_name, inputs, expected, returns, api_key):
@@ -25,7 +24,7 @@ class BugFixer:
 
 
 
-def fix_bug(function_name, path, data, inputs, function, main_response, args):
+def fix_bug(function_name, path, data, inputs, function, main_response, args, get_module):
     if function[function_name].get('use-ai') or function[function_name].get('auto-fix'):
         if function[function_name]["expected"].get("comparator") != "Equals":
             rich.print(f"[bold red]Test for {function_name}: Cannot use ai with assertion other than Equals[/bold red]")
@@ -34,11 +33,11 @@ def fix_bug(function_name, path, data, inputs, function, main_response, args):
             rich.print("[bold red]Cannot use ai without OpenAI api-key[/bold red]")
             return
         
-        func_code = utils.extract_function_code(function_name, path)
+        func_code = get_module('utils').extract_function_code(function_name, path)
         if not func_code:
             rich.print(f"[bold red]Test for {function_name}: Cannot find function code[/bold red]")
             return
-        bug_fixer = BugFixer(func_code, function_name, inputs, function[function_name]["expected"]["value"], [main_response if isinstance(main_response, str) else main_response[0], isinstance(main_response, str)], data["api-key"])
+        bug_fixer = get_module('ai').BugFixer(func_code, function_name, inputs, function[function_name]["expected"]["value"], [main_response if isinstance(main_response, str) else main_response[0], isinstance(main_response, str)], data["api-key"])
         if isinstance(main_response, str):
             bug = main_response
         else:
@@ -70,9 +69,9 @@ def fix_bug(function_name, path, data, inputs, function, main_response, args):
         if function[function_name].get('instance'):
             args_ditctionary.update({"instance_params":function[function_name]["instance"]})
         
-        args_for_main = utils.Args(args_ditctionary)
+        args_for_main = get_module('utils').Args(args_ditctionary)
         
-        test_fixed_bug = tester.test(args_for_main)
+        test_fixed_bug = get_module('tester').test(args_for_main)
         if isinstance(test_fixed_bug, str):
             rich.print("[bold red]Bug fixed failed[/bold red]")
         rich.print("[bold green]Bug fixed successfully[/bold green]")

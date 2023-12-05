@@ -1,8 +1,6 @@
 import importlib.util
-import rich
-from . import utils
 
-def test(args: utils.Args):
+def test(args, get_module):
         module_name = 'module'
         spec = importlib.util.spec_from_file_location(module_name, args.file)
         module = importlib.util.module_from_spec(spec)
@@ -27,8 +25,8 @@ def test(args: utils.Args):
                 return None
             function_params = function_params.__annotations__
         if type(args.params) == list:    
-            params = utils.params_to_dict(args.params)
-            params = utils.eval_params_values(params,function_params)
+            params = get_module('utils').params_to_dict(args.params)
+            params = get_module('utils').eval_params_values(params,function_params)
         else:
             params = args.params
         to_return_assert = None
@@ -36,8 +34,8 @@ def test(args: utils.Args):
         if function_type == "method":
             init_params = module.__dict__.get(args.function.split('.')[0]).__init__.__annotations__
             if type(args.instance_params) == list:    
-                instance_params = utils.params_to_dict(args.instance_params)
-                instance_params = utils.eval_params_values(instance_params,init_params)
+                instance_params = get_module('utils').params_to_dict(args.instance_params)
+                instance_params = get_module('utils').eval_params_values(instance_params,init_params)
             else:
                 instance_params = args.instance_params
         try:
