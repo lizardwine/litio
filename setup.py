@@ -8,6 +8,7 @@ requirements = [
     "rich==13.7.0",
     "openai==1.3.5",
     "python-dotenv==1.0.0",
+    "gitpython==3.1.40"
 ]
 
 setup(
@@ -22,7 +23,7 @@ setup(
         "Bug Tracker": "https://github.com/lizardwine/litio/issues",
     },
     license='GPL v3.0',
-    version='1.4.0',
+    version='1.4.1',
     keywords=['testing', 'tester'],
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
