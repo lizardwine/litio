@@ -314,7 +314,7 @@ litio = {
   - `classic`: classic output
   - `capybara`: capybara output
 - options: you can add and replace any option for litio command
-  - `--verson`: shows the litio version and exit
+  - `--version`: shows the litio version and exit
 
 - sub_commands: you can add and replace any sub command
   - `run`: run the tests in litio.yml
