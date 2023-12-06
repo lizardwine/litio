@@ -35,8 +35,18 @@ def install_module(args, get_module):
     repository = f'https://github.com/{module}.git'
     print(f"Installing module {module}...")
     repo = Repo.clone_from(repository, f'./litio/modules/{module}')
+    if args.branch:
+        try:
+            repo.git.checkout(args.branch)
+        except:
+            print(f"Branch '{args.branch}' not found")
+            print(f'Installing module at default branch...')
     if version:
-        repo.git.checkout(version)
+        try:
+            repo.git.checkout(version)
+        except:
+            print(f"Version '{version}' not found")
+            print(f'Installing module at last version...')
     if 'requirements.txt' in os.listdir(f'./litio/modules/{module}'):
         print(f"Installing requirements for module {module}...")
         subprocess.run(['pip', 'install', '-r', f'./litio/modules/{module}/requirements.txt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -106,6 +116,14 @@ sub_commands = {
                 'help': 'upgrade a litio module',
                 'required': False,
                 'action': 'store_true'
+            },
+            'branch': {
+                'option': '--branch',
+                'aliases': ['-b'],
+                'dest': 'branch',
+                'default': None,
+                'help': 'branch to get the module from',
+                'required': False                
             }
         },
         'controller': install_module
