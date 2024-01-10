@@ -68,7 +68,7 @@ options = {
         'option': '--version',
         'aliases': ['-v'],
         'action': 'version',
-        'version':'%(prog)s {}'.format(info.__version__)
+        'version':'%(prog)s v{}'.format(info.__version__)
     }
 }
 

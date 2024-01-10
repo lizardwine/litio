@@ -1,12 +1,17 @@
-import argparse, yaml
+import argparse, yaml, os
 try:     
-    from utils import modules
+    from utils import modules, info
 except ModuleNotFoundError:
-    from .utils import modules
+    from .utils import modules, info
 
 
 def litio():
     parser = argparse.ArgumentParser(description='A command line function tester')
+    if not os.path.exists('./litio.yml'):
+        print(f"Litio v{info.__version__}")
+        print("No config file 'litio.yml' found")
+        exit(1)
+    
     data = open('./litio.yml', "r").read()
     data = yaml.safe_load(data)
     
