@@ -5,6 +5,8 @@ from . import litio, info, output, utils, tester, ai
 
 
 def purge_dir(dir):
+    if not os.path.exists(dir):
+        return
     for f in os.listdir(dir):
         if os.path.isdir(os.path.join(dir, f)):
             purge_dir(os.path.join(dir, f))
@@ -21,7 +23,7 @@ def install_module(args, get_module):
         os.mkdir(f'./litio')
     if not os.path.exists(f'./litio/modules'):
         os.mkdir(f'./litio/modules')
-    if args.upgrade:
+    if args.upgrade and os.path.exists(f'./litio/modules/{module}'):
         purge_dir(f'./litio/modules/{module}')
         os.rmdir(f'./litio/modules/{module}')
     if os.path.exists(f'./litio/modules/{module}'):
@@ -167,8 +169,8 @@ modules_info = {
         
     }
 }
-def load_modules():
-    if not os.path.exists('./litio/modules'):
+def load_modules(safe_mode):
+    if not os.path.exists('./litio/modules') or safe_mode:
         return modules_info
     for author in os.listdir(f'./litio/modules'):
         for module in os.listdir(f'./litio/modules/{author}'):

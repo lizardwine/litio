@@ -3,3 +3,4 @@ litio.egg-info
 __pycache__
 env
 .env
+tests/litio/

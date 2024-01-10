@@ -1,4 +1,4 @@
-import argparse
+import argparse, yaml
 try:     
     from utils import modules
 except ModuleNotFoundError:
@@ -7,8 +7,10 @@ except ModuleNotFoundError:
 
 def litio():
     parser = argparse.ArgumentParser(description='A command line function tester')
-
-    modules_info = modules.load_modules()
+    data = open('./litio.yml', "r").read()
+    data = yaml.safe_load(data)
+    
+    modules_info = modules.load_modules(data.get('safe-mode'))
     def get_module(module_name, info=False):
         if info:
             return modules_info[module_name]
