@@ -43,9 +43,9 @@ def litio():
         sub_parser.set_defaults(func=sub_command['controller'])
     
     args = parser.parse_args()
-    if args.func is None:
+    if args.__dict__.get('func') is None:
         parser.print_help()
-        exit(0)
+        exit(0)    
     args.func(args, get_module)
     exit(0)
 
