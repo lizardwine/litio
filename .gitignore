@@ -2,6 +2,7 @@ dist/
 litio.egg-info
 __pycache__
 env
+venv/
 .env
 tests/litio/**
 tests/package/**
