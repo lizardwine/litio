@@ -1,8 +1,13 @@
 import os, argparse, importlib, subprocess
 from git import Repo
-
+import json
 from . import litio, info, output, utils, tester, ai
+import tarfile
 
+
+def uncompress(source, dest):
+    with tarfile.open(source, "r:gz") as tar:
+        tar.extractall(path=dest)
 
 def purge_dir(dir):
     if not os.path.exists(dir):
@@ -14,15 +19,29 @@ def purge_dir(dir):
         else:
             os.remove(os.path.join(dir, f))
 
-def install_module(args, get_module):
-    module = args.module
-    version = None
-    if '@' in module:
-        module, version = module.split('@')
+def prepare_for_install():
     if not os.path.exists(f'./litio'):
         os.mkdir(f'./litio')
     if not os.path.exists(f'./litio/modules'):
         os.mkdir(f'./litio/modules')
+    if not os.path.exists(f'./litio/modules/.dev'):
+        os.mkdir(f'./litio/modules/.dev')
+
+def install_module(args, get_module):
+    module = args.module
+    version = None
+    if module.endswith('.tar.gz'):
+        prepare_for_install()
+        name = ".".join(module.split(".")[:-2])
+        name = name.split("/")[-1]
+        print("Installing module from tarball")
+        uncompress(module, f'./litio/modules/.dev/{name}')
+        print(f"Module {name} installed successfully")
+        return
+        
+    if '@' in module:
+        module, version = module.split('@')
+    prepare_for_install()
     if args.upgrade and os.path.exists(f'./litio/modules/{module}'):
         purge_dir(f'./litio/modules/{module}')
         os.rmdir(f'./litio/modules/{module}')
@@ -63,6 +82,34 @@ def remove_module(args, get_module):
     os.rmdir(f'./litio/modules/{args.module}')
     print(f"Module {args.module} removed successfully")
 
+def pack_module(args, get_module):
+    required_files = ["litio.py", "litio.json"]
+    for file in required_files:
+        if not os.path.exists(file):
+            print(f"Required file {file} not found")
+            return
+    ignore = ["dist"]
+    if os.path.exists('./.litioignore'):
+        ignore += open('./.litioignore', 'r').read().splitlines()
+    package_data = json.load(open('./litio.json', 'r'))
+    if not package_data.get('name'):
+        print('Missing name in litio.json')
+        return
+    if not package_data.get('version'):
+        print('Missing version in litio.json')
+        return
+    if not os.path.exists('./dist/'):
+        os.mkdir('./dist/')
+    else:
+        purge_dir('./dist/')
+    tar = tarfile.open(f'./dist/{package_data["name"]}-{package_data["version"]}.tar.gz', 'w:gz')
+    for file in os.listdir('./'):
+        if file in ignore and not file in required_files:
+            continue
+        tar.add(file)
+    tar.close()
+    print("Module packed successfully")
+
 options = {
     'version': {
         'option': '--version',
@@ -73,6 +120,14 @@ options = {
 }
 
 sub_commands = {
+    'pack': {
+        'command': 'pack',
+        'help': 'pack a litio module',
+        'controller': pack_module,
+        'options': {
+            
+        }
+    },
     'run': {
         'command': 'run',
         'help': 'run a litio test',
@@ -172,7 +227,9 @@ modules_info = {
 def load_modules(safe_mode):
     if not os.path.exists('./litio/modules') or safe_mode:
         return modules_info
-    for author in os.listdir(f'./litio/modules'):
+    modules = os.listdir(f'./litio/modules')
+    modules = [module for module in modules if module != ".dev"]
+    for author in modules:
         for module in os.listdir(f'./litio/modules/{author}'):
             if not os.path.exists(f'./litio/modules/{author}/{module}/litio.py'):
                 continue
@@ -181,4 +238,12 @@ def load_modules(safe_mode):
             spec.loader.exec_module(modulelib)
             for key, value in modulelib.litio.items():
                 modules_info[key].update(value)
+    for module in os.listdir('./litio/modules/.dev'):
+        if not os.path.exists(f'./litio/modules/.dev/{module}/litio.py'):
+            continue
+        spec = importlib.util.spec_from_file_location(f'.dev-{module}', f'./litio/modules/.dev/{module}/litio.py')
+        modulelib = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(modulelib)
+        for key, value in modulelib.litio.items():
+            modules_info[key].update(value)
     return modules_info

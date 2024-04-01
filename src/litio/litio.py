@@ -7,13 +7,12 @@ except ModuleNotFoundError:
 
 def litio():
     parser = argparse.ArgumentParser(description='A command line function tester')
-    if not os.path.exists('./litio.yml'):
-        print(f"Litio v{info.__version__}")
-        print("No config file 'litio.yml' found")
-        exit(1)
-    
-    data = open('./litio.yml', "r").read()
-    data = yaml.safe_load(data)
+    data = {
+        'safe-mode': False
+    }
+    if os.path.exists('./litio.yml'):
+        data = open('./litio.yml', "r").read()
+        data = yaml.safe_load(data)
     
     modules_info = modules.load_modules(data.get('safe-mode'))
     def get_module(module_name, info=False):
@@ -44,6 +43,7 @@ def litio():
         sub_parser.set_defaults(func=sub_command['controller'])
     
     args = parser.parse_args()
+    
     args.func(args, get_module)
     exit(0)
 

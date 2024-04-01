@@ -2,7 +2,7 @@ import rich, yaml, os
 
 def run(args, get_module):
     if not os.path.exists('litio.yml'):
-        rich.print(f"[bold red]Config file \"[bold yellow]litio.yml[/bold yellow]\" does not exist[/bold red]")
+        print("❌ No config file 'litio.yml' found")
         exit(1)
     data = open('./litio.yml','r').read()
     data = yaml.safe_load(data)
