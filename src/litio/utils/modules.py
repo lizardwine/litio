@@ -34,8 +34,16 @@ def install_module(args, get_module):
         prepare_for_install()
         name = ".".join(module.split(".")[:-2])
         name = name.split("/")[-1]
+        no_version_name = "-".join(name.split("-")[:-1])
         print("Installing module from tarball")
+        for f in os.listdir('./litio/modules/.dev'):
+            if no_version_name in f:
+                purge_dir(f'./litio/modules/.dev/{f}')
+                os.rmdir(f'./litio/modules/.dev/{f}')
         uncompress(module, f'./litio/modules/.dev/{name}')
+        if 'requirements.txt' in os.listdir(f'./litio/modules/.dev/{name}/'):
+            print(f"Installing requirements for module {name}...")
+            subprocess.run(['pip', 'install', '-r', f'./litio/modules/.dev/{name}/requirements.txt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print(f"Module {name} installed successfully")
         return
         
